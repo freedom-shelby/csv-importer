@@ -1,0 +1,31 @@
+version: '3.3'
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'iris'
+      MYSQL_PASSWORD: 'irispassword'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3306:3306'
+    volumes:
+      - iris_mysql_data:/var/lib/mysql
+  app:
+    build:
+      context: ./.docker/app
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    volumes:
+      - ./:/app
+    environment:
+      DB_HOST: 'db'
+      DB_NAME: 'db'
+      DB_USER: 'iris'
+      DB_PASS: 'irispassword'
+
+volumes:
+  iris_mysql_data:
+    driver: local
